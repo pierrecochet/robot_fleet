@@ -6,6 +6,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Arene extends JFrame implements Runnable
 {
@@ -65,41 +66,128 @@ public class Arene extends JFrame implements Runnable
         while(!Thread.interrupted()) {
             clear();
             render();
+            try {
+                this.thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void clear() {
         for (int i = 0; i < this.pixels.length; i++) {
-            this.pixels[i] = Color.black.getRGB();
+            this.pixels[i] = Color.pink.getRGB();
         }
     }
 
+    public void mange(Robot robot,Robot r){
+        if(r.getSize()>robot.getSize()){
+            //robot.getFleet().getRobots().remove(robot);
+            r.setSize(r.getSize()+(robot.getSize()/2));
+        //temporaire je ne peux pas retirer de la liste sinon ça créer des conflits dans la lecture de la liste de robots
+            robot.setSize(0);
+            robot.setPosX(10000);
+            robot.setPosY(10000);
+            robot=null;
+        }else if(r.getSize()==robot.getSize()){
+            long rand = Math.round( Math.random());
+            if(rand ==0){
+                r.getFleet().getRobots().remove(r);
+                robot.setSize(robot.getSize()+(r.getSize()/2));
+                r=null;
+            }else{
+                r.setSize(r.getSize()+(robot.getSize()/2));
+                robot.setSize(0);
+                robot.setPosX(10000);
+                robot.setPosY(10000);
+                robot=null;
+            }
+        }else{
+
+            r.getFleet().getRobots().remove(r);
+            robot.setSize(robot.getSize()+(r.getSize()/2));
+            r=null;
+        }
+
+
+    }
+
+    public void repousse(Robot robot, Robot r){//!!!!IMPORTANT!!!! au dessus d'une certaine taille enlever la collision ?
+        int x3 = r.getPosX()>robot.getPosX() ? r.getPosX()-100 : r.getPosX()+100,
+                y3 = r.getPosY()>robot.getPosY() ? r.getPosY()-100 : r.getPosY()+100;
+        int x3b = r.getPosX()<robot.getPosX() ? robot.getPosX()-100 : robot.getPosX()+100,
+                y3b = r.getPosY()<robot.getPosY() ? robot.getPosY()-100 : robot.getPosY()+100;
+        robot.moveTo(x3, y3);
+        r.moveTo(x3b, y3b);
+    }
+
+
+    /**
+     *
+     * @param robot
+     * @param fleets
+     * @return
+     */
+    public boolean collision(Robot robot, ArrayList<Flotte> fleets){
+        Random rand = new Random();
+        int posX = robot.getPosX(),
+            posY = robot.getPosY();
+
+        for(Flotte f:fleets){
+            for(Robot r:f.getRobots()){
+                //check si le carré dessiné autour d'un robot rentre en collision avec le carré d'un autre robot
+                if(posX>=r.getPosX()-(robot.getSize()+r.getSize()) && posX<=r.getPosX()+(robot.getSize()+r.getSize())
+                        && posY>=r.getPosY()-(robot.getSize()+r.getSize()) && posY<=r.getPosY()+(robot.getSize()+r.getSize())
+                        && !robot.equals(r)) {
+
+                    if(!robot.getFleet().equals(r.getFleet())){
+                        mange(robot,r);
+                        return false;
+                    }else{
+                        repousse(robot,r);
+                        return true;
+                    }
+                //test3 concluant
+                    //Les collisions sont gérées en envoyant les robots dans des directions strictement opposées
+
+
+                }
+            }
+        }
+        return true;
+
+    }
+
     public void render() {
+        boolean collision;
         for(Flotte fleet : this.fleets) {
             for(Robot robot : fleet.getRobots()) {
-                for (int i = 0; i < 20; i++) {
-                    for (int j = 0; j < 20; j++) {
+                for (int i = 0; i < robot.getSize()*2; i++) {
+                    for (int j = 0; j < robot.getSize()*2; j++) {
                         try {
-                            if(robot.getGotoX() != robot.getPosX() || robot.getGotoY() != robot.getPosY()) {
-                                /*int x =(robot.getPosX() - 10) + i + 1,
-                                    y=(robot.getPosY() - 10) + j + 1;*/
-                                /*System.out.println("ouo");
-                                int x = robot.getPosX() < robot.getGotoX() ? (robot.getPosX() - 10) + i + 1 : (robot.getPosX() - 10) + i - 1,
-                                    y = robot.getPosY() < robot.getGotoY() ? (robot.getPosY() - 10) + j + 1 : (robot.getPosY() - 10) + j - 1;
+                            if(robot.getGotoX() != robot.getPosX()  || robot.getGotoY() != robot.getPosY() ) {
 
-                                this.bufferedImage.setRGB(x, y, fleet.getColor().getRGB());
-                                robot.setPosX(x).setPosY(y);*/
-                                this.bufferedImage.setRGB((robot.getPosX() - 10) + i, (robot.getPosY() - 10) + j, fleet.getColor().getRGB());
-                                robot.setPosX(robot.getPosX()+1).setPosY(robot.getPosY()+1);
-                                System.out.println("oui");
+                                    int x = robot.getPosX() < robot.getGotoX() ? (robot.getPosX() - robot.getSize()) + i + 1 : (robot.getPosX() - robot.getSize()) + i - 1,
+                                            y = robot.getPosY() < robot.getGotoY() ? (robot.getPosY() - robot.getSize()) + j + 1 : (robot.getPosY() - robot.getSize()) + j - 1;
+                                    this.bufferedImage.setRGB((robot.getPosX() - robot.getSize()) + i, (robot.getPosY() - robot.getSize()) + j, fleet.getColor().getRGB());
+
+
                             }
                             else {
-                                this.bufferedImage.setRGB((robot.getPosX() - 10) + i, (robot.getPosY() - 10) + j, fleet.getColor().getRGB());
+                                this.bufferedImage.setRGB((robot.getPosX() - robot.getSize()) + i, (robot.getPosY() - robot.getSize()) + j, fleet.getColor().getRGB());
                             }
                         }
                         catch(Exception e) {}
                     }
                 }
+                collision=collision(robot,this.getFleets());
+                int x = robot.getPosX() < robot.getGotoX() ? (robot.getPosX() + robot.getVitesse()) : (robot.getPosX() - robot.getVitesse()),
+                    y = robot.getPosY() < robot.getGotoY() ? (robot.getPosY() + robot.getVitesse()) : (robot.getPosY() - robot.getVitesse());
+                robot.setPosX(x).setPosY(y);
+                /*if(collision){
+                    System.out.println("oui");
+                    robot.setVitesse(robot.getVitesse()-1);
+                }*/
             }
         }
 

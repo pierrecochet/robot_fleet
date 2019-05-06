@@ -17,14 +17,15 @@ public class Mover extends Thread
 
                 arena.getFleets().forEach((Flotte fleet) -> {
                     fleet.getRobots().forEach((Robot r) -> {
-                        int x = rand.nextInt(600);
-                        int y = rand.nextInt(600);
-
+                        int x = rand.nextInt(500);
+                        int y = rand.nextInt(500);
+                        /*int x=250,
+                            y=250;*/
                         r.moveTo(x, y);
                     });
                 });
 
-                this.sleep(1000);
+                this.sleep(600);
 
             }
             catch(Exception e) { }
