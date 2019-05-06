@@ -78,17 +78,20 @@ public class Arene extends JFrame implements Runnable
         for(Flotte fleet : this.fleets) {
             for(Robot robot : fleet.getRobots()) {
                 for (int i = 0; i < 20; i++) {
-                    for (int j = 0; j < 30; j++) {
+                    for (int j = 0; j < 20; j++) {
                         try {
                             if(robot.getGotoX() != robot.getPosX() || robot.getGotoY() != robot.getPosY()) {
                                 /*int x =(robot.getPosX() - 10) + i + 1,
                                     y=(robot.getPosY() - 10) + j + 1;*/
-                                System.out.println("ouo");
+                                /*System.out.println("ouo");
                                 int x = robot.getPosX() < robot.getGotoX() ? (robot.getPosX() - 10) + i + 1 : (robot.getPosX() - 10) + i - 1,
                                     y = robot.getPosY() < robot.getGotoY() ? (robot.getPosY() - 10) + j + 1 : (robot.getPosY() - 10) + j - 1;
 
                                 this.bufferedImage.setRGB(x, y, fleet.getColor().getRGB());
-                                robot.setPosX(x).setPosY(y);
+                                robot.setPosX(x).setPosY(y);*/
+                                this.bufferedImage.setRGB((robot.getPosX() - 10) + i, (robot.getPosY() - 10) + j, fleet.getColor().getRGB());
+                                robot.setPosX(robot.getPosX()+1).setPosY(robot.getPosY()+1);
+                                System.out.println("oui");
                             }
                             else {
                                 this.bufferedImage.setRGB((robot.getPosX() - 10) + i, (robot.getPosY() - 10) + j, fleet.getColor().getRGB());

@@ -49,7 +49,7 @@ public class Flotte extends RobotAdapter
     }
     @Override
     public void onRobotMoved(RobotMovedEvent e) {
-        System.out.println("Robot: " + e.getRobot().getName() + " moved to " + e.getRobot().getPosX() + ":" + e.getRobot().getPosY());
+        System.out.println("Robot: " + e.getRobot().getName() + " moved to (" + e.getRobot().getPosX() + ";" + e.getRobot().getPosY()+")");
     }
 
     public void transmitMessage(Robot r, String message) {

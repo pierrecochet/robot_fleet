@@ -12,8 +12,8 @@ public class Main
 {
     public static void main(String[] args) {
         int numberOfRobots = 8,
-            arenaX = 1500,
-            arenaY = 800;
+            arenaX = 300,
+            arenaY = 300;
 
         Arene arena = new Arene(arenaX, arenaY);
 
@@ -21,11 +21,14 @@ public class Main
         Flotte flotteBleue = new Flotte(Color.blue);
 
         Robot robot1 = new Robot("Robot 1", 100, 100, flotteRouge);
-        Robot robot2 = new Robot("Robot 2", 30, 30, flotteRouge);
-        Robot robot3 = new Robot("Robot 3", 200, 200, flotteBleue);
-        Robot robot4 = new Robot("Robot 4", 250, 250, flotteBleue);
-        Robot robot5 = new Robot("Robot 5", 100, 100, flotteRouge);
-        Robot robot6 = new Robot("Robot 6", 30, 30, flotteRouge);
+        Robot robot2 = new Robot("Robot 2", 100, 130, flotteRouge);
+        Robot robot3 = new Robot("Robot 3", 100, 160, flotteRouge);
+        Robot robot4 = new Robot("Robot 4", 100, 190, flotteRouge);
+        Robot robot5 = new Robot("Robot 5", 200, 100, flotteBleue);
+        Robot robot6 = new Robot("Robot 6", 200, 130, flotteBleue);
+        Robot robot7 = new Robot("Robot 7", 200, 160, flotteBleue);
+        Robot robot8 = new Robot("Robot 8", 200, 190, flotteBleue);
+
 
 
         flotteRouge.bindToArena(arena);
